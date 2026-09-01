@@ -1,0 +1,5 @@
+Alembic migrations for the beta-center server.
+
+Create schema changes only after updating the SQLAlchemy model, then review generated
+operations before applying them. Production startup runs `alembic upgrade head` and
+never relies on SQLAlchemy `create_all`.

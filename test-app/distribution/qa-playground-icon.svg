@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <rect width="1024" height="1024" rx="220" fill="#e9fff8"/>
+  <rect x="70" y="70" width="884" height="884" rx="220" fill="#0d2e27"/>
+  <text x="174" y="610" fill="#e9fff8" font-family="Helvetica,Arial,sans-serif" font-size="262" font-weight="800" letter-spacing="-12">QA</text>
+  <rect x="612" y="596" width="250" height="200" rx="62" fill="#51ddbe"/>
+  <text x="661" y="739" fill="#0d2e27" font-family="Helvetica,Arial,sans-serif" font-size="132" font-weight="800">T1</text>
+</svg>

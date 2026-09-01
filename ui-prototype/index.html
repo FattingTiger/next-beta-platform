@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light" />
+    <title>内测中心 · 三页界面提案</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="glass-v2.css" />
+  </head>
+  <body>
+    <!-- THESIS: 用“版本光场”把发布、下载与反馈证据连接起来，关键卡片形成清晰的玻璃层级。
+    OWN-WORLD: 深海松石背景、Material 3 色阶、有限的半透明卡片、清晰实体控件；状态色制造景深。
+    STORY: 管理员发布版本，员工确认版本并下载，再把证据绑定到该版本反馈。
+    FIRST VIEWPORT: 后台先看到版本态势与卡片式应用台账；移动端先看到应用身份、版本与主操作玻璃卡。
+    FORM: Material Frost / Release Aurora，用户指定卡片毛玻璃方向，Android 端支持实体色阶降级。
+    FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance -->
+    <header class="prototype-bar" aria-label="原型页面切换">
+      <div class="prototype-title">
+        <span class="prototype-mark" aria-hidden="true"></span>
+        <div>
+          <strong>内测中心</strong>
+          <span>三页界面提案</span>
+        </div>
+      </div>
+      <nav class="prototype-tabs" aria-label="选择界面">
+        <button class="prototype-tab is-active" type="button" data-view-target="admin">管理后台</button>
+        <button class="prototype-tab" type="button" data-view-target="app-detail">应用详情</button>
+        <button class="prototype-tab" type="button" data-view-target="bug-report">Bug 反馈</button>
+      </nav>
+      <p class="prototype-note">Layered Frost · Material 3</p>
+    </header>
+
+    <main class="prototype-stage">
+      <section class="view-panel is-active" data-view="admin" aria-label="Web 管理后台应用管理页">
+        <div class="admin-shell">
+          <aside class="admin-sidebar">
+            <div class="admin-brand">
+              <span class="brand-seal">内</span>
+              <div>
+                <strong>内测中心</strong>
+                <small>Beta Console</small>
+              </div>
+            </div>
+
+            <nav class="admin-nav" aria-label="后台导航">
+              <a class="is-current" href="#admin">应用管理</a>
+              <a href="#groups">测试组</a>
+              <a href="#bugs">Bug 反馈 <span class="nav-count">7</span></a>
+              <a href="#downloads">下载记录</a>
+              <a href="#users">用户管理</a>
+            </nav>
+
+            <div class="admin-account">
+              <span class="account-avatar">张</span>
+              <div>
+                <strong>张管理员</strong>
+                <small>系统管理员</small>
+              </div>
+            </div>
+          </aside>
+
+          <section class="admin-content">
+            <header class="admin-heading">
+              <div>
+                <h1>应用管理</h1>
+                <p>维护内测应用、版本与测试组范围</p>
+              </div>
+              <button class="primary-button" type="button" data-toast="已进入 APK 上传流程（原型）">上传 APK</button>
+            </header>
+
+            <section class="admin-insight-strip" aria-label="内测发布概览">
+              <article class="release-pulse-card">
+                <div class="release-pulse-copy">
+                  <span><i aria-hidden="true"></i> 本周内测态势</span>
+                  <strong>84 名测试用户参与 7 个应用</strong>
+                  <small>最近一次发布：移动审批 2.4.0 · 昨天 18:42</small>
+                </div>
+                <dl>
+                  <div><dt>开放下载</dt><dd>6</dd></div>
+                  <div><dt>待处理 Bug</dt><dd>7</dd></div>
+                  <div><dt>处理中</dt><dd>2</dd></div>
+                </dl>
+              </article>
+            </section>
+
+            <div class="admin-toolbar">
+              <label class="search-field">
+                <span>搜索</span>
+                <input type="search" placeholder="应用名称或包名" aria-label="搜索应用" />
+              </label>
+              <label class="compact-select">
+                <span>状态</span>
+                <select aria-label="筛选应用状态">
+                  <option>全部状态</option>
+                  <option>已上架</option>
+                  <option>已下架</option>
+                  <option>草稿</option>
+                </select>
+              </label>
+              <label class="compact-select">
+                <span>测试组</span>
+                <select aria-label="筛选测试组">
+                  <option>全部测试组</option>
+                  <option>核心测试组</option>
+                  <option>全员测试组</option>
+                  <option>财务测试组</option>
+                </select>
+              </label>
+              <span class="result-count">共 7 个应用</span>
+            </div>
+
+            <div class="application-table-wrap">
+              <table class="application-table" role="grid" aria-label="内测应用列表">
+                <thead>
+                  <tr>
+                    <th scope="col">应用</th>
+                    <th scope="col">最新版本</th>
+                    <th scope="col">测试组</th>
+                    <th scope="col">下载完成</th>
+                    <th scope="col">未关闭 Bug</th>
+                    <th scope="col">更新时间</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="is-selected" tabindex="0" aria-selected="true" data-app-row="移动审批" data-status="已上架" data-group="核心测试组">
+                    <td><span class="app-icon mint">移</span><span><strong>移动审批</strong><small>com.intra.approval</small></span></td>
+                    <td><span class="version-value">2.4.0</span><span class="live-dot" aria-label="已上架"></span></td>
+                    <td>核心测试组</td>
+                    <td>56 人</td>
+                    <td><span class="bug-number warning">6</span></td>
+                    <td>08-27 18:42</td>
+                  </tr>
+                  <tr tabindex="0" aria-selected="false" data-app-row="安全管家" data-status="已上架" data-group="安全测试组">
+                    <td><span class="app-icon blue">安</span><span><strong>安全管家</strong><small>com.intra.safeguard</small></span></td>
+                    <td><span class="version-value">1.7.3</span><span class="live-dot" aria-label="已上架"></span></td>
+                    <td>安全测试组</td>
+                    <td>42 人</td>
+                    <td><span class="bug-number">1</span></td>
+                    <td>08-26 11:05</td>
+                  </tr>
+                  <tr tabindex="0" aria-selected="false" data-app-row="数据看板" data-status="已上架" data-group="经营测试组">
+                    <td><span class="app-icon amber">数</span><span><strong>数据看板</strong><small>com.intra.dashboard</small></span></td>
+                    <td><span class="version-value">3.1.0</span><span class="live-dot" aria-label="已上架"></span></td>
+                    <td>经营测试组</td>
+                    <td>38 人</td>
+                    <td><span class="bug-number warning">3</span></td>
+                    <td>08-25 16:20</td>
+                  </tr>
+                  <tr tabindex="0" aria-selected="false" data-app-row="员工服务" data-status="已上架" data-group="全员测试组">
+                    <td><span class="app-icon violet">员</span><span><strong>员工服务</strong><small>com.intra.employee</small></span></td>
+                    <td><span class="version-value">2.0.1</span><span class="live-dot" aria-label="已上架"></span></td>
+                    <td>全员测试组</td>
+                    <td>64 人</td>
+                    <td><span class="bug-number">0</span></td>
+                    <td>08-23 09:17</td>
+                  </tr>
+                  <tr tabindex="0" aria-selected="false" data-app-row="知识库" data-status="已上架" data-group="内容测试组">
+                    <td><span class="app-icon rose">知</span><span><strong>知识库</strong><small>com.intra.knowledge</small></span></td>
+                    <td><span class="version-value">1.3.5</span><span class="live-dot" aria-label="已上架"></span></td>
+                    <td>内容测试组</td>
+                    <td>27 人</td>
+                    <td><span class="bug-number">2</span></td>
+                    <td>08-21 15:48</td>
+                  </tr>
+                  <tr tabindex="0" aria-selected="false" data-app-row="设备助手" data-status="已上架" data-group="运维测试组">
+                    <td><span class="app-icon cyan">设</span><span><strong>设备助手</strong><small>com.intra.device</small></span></td>
+                    <td><span class="version-value">2.2.0</span><span class="live-dot" aria-label="已上架"></span></td>
+                    <td>运维测试组</td>
+                    <td>31 人</td>
+                    <td><span class="bug-number">0</span></td>
+                    <td>08-20 12:30</td>
+                  </tr>
+                  <tr tabindex="0" aria-selected="false" data-app-row="终端工具箱" data-status="草稿" data-group="运维测试组">
+                    <td><span class="app-icon graphite">终</span><span><strong>终端工具箱</strong><small>com.intra.toolbox</small></span></td>
+                    <td><span class="version-value">0.9.8</span><span class="state-badge draft">草稿</span></td>
+                    <td>运维测试组</td>
+                    <td>19 人</td>
+                    <td><span class="bug-number">1</span></td>
+                    <td>08-18 10:02</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <footer class="table-footer">
+              <span>当前显示 1–7 项</span>
+              <div class="pagination" aria-label="分页">
+                <button type="button" disabled>上一页</button>
+                <button class="is-current" type="button">1</button>
+                <button type="button" disabled>下一页</button>
+              </div>
+            </footer>
+          </section>
+
+          <aside class="release-dossier" aria-label="选中应用详情">
+            <header class="dossier-header">
+              <span class="app-icon mint large">移</span>
+              <div>
+                <h2 id="dossier-app-name">移动审批</h2>
+                <p>com.intra.approval</p>
+                <span class="state-badge live">已上架</span>
+              </div>
+              <button class="icon-button close-detail" type="button" aria-label="关闭详情"></button>
+            </header>
+
+            <section class="version-passport">
+              <div class="passport-topline">
+                <span>当前发布版本</span>
+                <span class="passport-code">REL-0240</span>
+              </div>
+              <strong>2.4.0</strong>
+              <dl>
+                <div><dt>发布时间</dt><dd>2026-08-27 18:42</dd></div>
+                <div><dt>APK 大小</dt><dd>28.6 MB</dd></div>
+                <div><dt>最低系统</dt><dd>Android 9 及以上</dd></div>
+                <div><dt>签名状态</dt><dd>签名一致</dd></div>
+              </dl>
+              <button class="secondary-button" type="button" data-toast="已进入新版本上传流程（原型）">上传新版本</button>
+            </section>
+
+            <section class="dossier-section">
+              <div class="section-title-row">
+                <h3>测试范围</h3>
+                <button type="button" class="text-button" data-toast="测试组编辑入口（原型）">编辑</button>
+              </div>
+              <div class="tag-row"><span>核心测试组 · 36</span><span>全员测试组 · 64</span></div>
+            </section>
+
+            <section class="dossier-section">
+              <h3>本次更新</h3>
+              <ul class="release-notes">
+                <li>修复审批记录导出失败的问题</li>
+                <li>优化长列表滚动与排序体验</li>
+                <li>提升地图加载稳定性</li>
+              </ul>
+            </section>
+
+            <section class="dossier-section bug-overview">
+              <div class="section-title-row"><h3>Bug 概览</h3><button class="text-button" type="button" data-toast="Bug 管理列表将在完整后台中打开（原型）">查看全部</button></div>
+              <div class="bug-status-line">
+                <span class="status-dot pending">待处理 <strong>3</strong></span>
+                <span class="status-dot progress">处理中 <strong>2</strong></span>
+                <span class="status-dot verify">待验证 <strong>1</strong></span>
+              </div>
+            </section>
+          </aside>
+        </div>
+      </section>
+
+      <section class="view-panel mobile-view" data-view="app-detail" aria-label="Android 客户端应用详情页">
+        <div class="phone-label"><strong>客户端 · 应用详情</strong><span>识别应用、确认版本、下载与进入反馈</span></div>
+        <article class="phone-shell">
+          <div class="phone-camera" aria-hidden="true"></div>
+          <div class="phone-status"><span>10:30</span><span>5G&nbsp;&nbsp;84%</span></div>
+          <div class="phone-screen">
+            <header class="mobile-topbar">
+              <button class="back-button" type="button" aria-label="返回应用列表" data-toast="已返回应用列表（该页不在本次三页范围）"><span aria-hidden="true"></span></button>
+              <strong>应用详情</strong>
+              <button class="more-button" type="button" aria-label="更多操作" data-toast="更多操作：分享应用信息、查看历史版本"><i></i><i></i><i></i></button>
+            </header>
+
+            <main class="mobile-content app-detail-content">
+              <section class="app-hero-card">
+                <div class="hero-eyebrow"><span><i aria-hidden="true"></i> 核心测试组</span><b>REL-0240</b></div>
+                <div class="app-identity">
+                  <span class="app-icon mint mobile-icon">移</span>
+                  <div>
+                    <h1>移动审批</h1>
+                    <p>公司审批与任务协同</p>
+                    <span class="mobile-version"><i></i>版本 2.4.0</span>
+                  </div>
+                </div>
+
+                <button class="download-button" type="button" id="download-button">更新</button>
+                <p class="download-meta" id="download-meta">版本已通过签名一致性校验</p>
+                <div class="hero-fact-grid" aria-label="版本信息">
+                  <span><small>文件</small><strong>28.6 MB</strong></span>
+                  <span><small>系统</small><strong>Android 9+</strong></span>
+                  <span><small>安全</small><strong>签名一致</strong></span>
+                </div>
+              </section>
+
+              <section class="mobile-section showcase-section">
+                <div class="mobile-section-title"><h2>应用截图</h2><span>3 张</span></div>
+                <div class="screenshot-rail" aria-label="应用截图">
+                  <figure class="screen-card approvals"><img src="assets/approval-home.svg" alt="移动审批首页，展示今日待办与审批分类" /><figcaption>今日待办</figcaption></figure>
+                  <figure class="screen-card route"><img src="assets/approval-route.svg" alt="审批进度详情，展示已完成、处理中和待审批节点" /><figcaption>审批进度</figcaption></figure>
+                  <figure class="screen-card records"><img src="assets/approval-records.svg" alt="审批记录列表，展示状态、申请人和提交时间" /><figcaption>审批记录</figcaption></figure>
+                </div>
+              </section>
+
+              <section class="mobile-section release-section">
+                <div class="mobile-section-title"><h2>本次更新</h2><time>08 月 27 日</time></div>
+                <ul>
+                  <li>修复审批记录导出失败的问题</li>
+                  <li>优化长列表滚动与排序体验</li>
+                  <li>提升地图加载稳定性</li>
+                </ul>
+              </section>
+
+              <section class="mobile-section bug-summary">
+                <div class="mobile-section-title"><h2>Bug 反馈</h2><button type="button" data-toast="Bug 列表与处理状态将在完整客户端中打开（原型）">查看全部</button></div>
+                <div class="bug-summary-row"><span class="bug-index pending">3</span><p><strong>待处理</strong><small>导出、推送等问题</small></p></div>
+                <div class="bug-summary-row"><span class="bug-index progress">2</span><p><strong>处理中</strong><small>管理员正在跟进</small></p></div>
+                <div class="bug-summary-row"><span class="bug-index verify">1</span><p><strong>待验证</strong><small>请在 2.4.0 版本验证</small></p></div>
+              </section>
+
+              <button class="feedback-button" type="button" data-view-jump="bug-report">反馈 Bug</button>
+            </main>
+
+            <nav class="mobile-nav" aria-label="客户端主导航">
+              <button class="is-active" type="button" data-toast="当前位于应用模块"><span class="nav-glyph apps-glyph" aria-hidden="true"></span>应用</button>
+              <button type="button" data-view-jump="bug-report"><span class="nav-glyph feedback-glyph" aria-hidden="true"></span>反馈</button>
+              <button type="button" data-toast="“我的”页面不在本次三页范围"><span class="nav-glyph user-glyph" aria-hidden="true"></span>我的</button>
+            </nav>
+            <div class="mobile-snackbar" role="status" aria-live="polite" aria-hidden="true"></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="view-panel mobile-view" data-view="bug-report" aria-label="Android 客户端 Bug 反馈页">
+        <div class="phone-label"><strong>客户端 · Bug 反馈</strong><span>自动绑定应用与版本，上传截图后提交</span></div>
+        <article class="phone-shell">
+          <div class="phone-camera" aria-hidden="true"></div>
+          <div class="phone-status"><span>10:30</span><span>5G&nbsp;&nbsp;84%</span></div>
+          <div class="phone-screen">
+            <header class="mobile-topbar">
+              <button class="back-button" type="button" aria-label="返回应用详情" data-view-jump="app-detail"><span aria-hidden="true"></span></button>
+              <strong>反馈 Bug</strong>
+              <span class="topbar-spacer" aria-hidden="true"></span>
+            </header>
+
+            <form class="mobile-content bug-form" id="bug-form" novalidate>
+              <section class="bug-app-context">
+                <span class="app-icon mint context-icon">移</span>
+                <div><strong>移动审批</strong><span>版本 2.4.0 · REL-0240</span></div>
+                <span class="context-lock">已绑定</span>
+              </section>
+
+              <section class="problem-card" aria-label="问题描述">
+                <label class="form-field">
+                  <span>问题标题 <em>必填</em></span>
+                  <input id="bug-title" name="title" type="text" value="审批记录导出后提示失败" maxlength="80" aria-describedby="title-error" required />
+                  <small class="field-error" id="title-error"></small>
+                </label>
+
+                <label class="form-field">
+                  <span>问题描述 <em>必填</em></span>
+                  <textarea id="bug-description" name="description" rows="5" maxlength="1000" aria-describedby="description-error" required>在导出 2026-08-27 的审批记录时，点击“导出”后提示失败。重新登录并清除缓存后仍可复现。</textarea>
+                  <small class="counter" id="description-counter">58 / 1000</small>
+                  <small class="field-error" id="description-error"></small>
+                </label>
+              </section>
+
+              <section class="evidence-card" aria-label="截图与设备证据">
+                <fieldset class="upload-field">
+                  <legend>上传截图 <span id="attachment-count">2 / 5</span></legend>
+                  <div class="upload-grid">
+                    <div class="bug-thumb dark"><img src="assets/approval-error.svg" alt="导出审批记录时显示操作失败" /><button type="button" data-delete-attachment aria-label="删除第一张截图"></button><span>导出结果</span><strong>操作失败</strong></div>
+                    <div class="bug-thumb light"><img src="assets/approval-records.svg" alt="发生问题前的审批记录列表" /><button type="button" data-delete-attachment aria-label="删除第二张截图"></button><span>审批记录</span></div>
+                    <button class="upload-trigger" type="button" data-toast="将打开系统相册（原型）"><span aria-hidden="true"></span>添加截图</button>
+                  </div>
+                  <p>请检查截图中是否包含手机号、聊天内容或账号信息。</p>
+                </fieldset>
+
+                <section class="device-context">
+                  <div><span>设备信息</span><strong>Pixel 8 · Android 15</strong></div>
+                  <div><span>客户端</span><strong>内测中心 1.0.0</strong></div>
+                </section>
+              </section>
+
+              <footer class="submit-bar">
+                <p class="form-result" id="form-result" role="status" aria-live="polite">文字和截图会自动保存为本地草稿</p>
+                <button class="submit-feedback" type="submit">提交反馈</button>
+              </footer>
+            </form>
+            <div class="mobile-snackbar" role="status" aria-live="polite" aria-hidden="true"></div>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <div class="toast" role="status" aria-live="polite" aria-hidden="true"></div>
+    <script src="app.js"></script>
+  </body>
+</html>

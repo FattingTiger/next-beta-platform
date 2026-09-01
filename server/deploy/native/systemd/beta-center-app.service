@@ -1,0 +1,36 @@
+[Unit]
+Description=Beta Center native staging application
+Requires=beta-center-postgres.service
+After=network.target beta-center-postgres.service
+Before=beta-center-caddy.service
+
+[Service]
+Type=simple
+Slice=beta-center.slice
+User=beta-app
+Group=beta-files
+SupplementaryGroups=beta-app
+EnvironmentFile=/etc/beta-center-native/runtime.env
+Environment=TMPDIR=/var/lib/beta-center-native/upload-tmp
+WorkingDirectory=/opt/beta-center-native/app/current
+ExecStart=/opt/beta-center-native/bin/start-app.sh
+Restart=on-failure
+RestartSec=3
+TimeoutStartSec=90
+TimeoutStopSec=30
+KillSignal=SIGTERM
+MemoryLimit=448M
+CPUQuota=95%
+OOMScoreAdjust=300
+LimitNOFILE=8192
+LimitNPROC=192
+UMask=0077
+PrivateTmp=false
+PrivateDevices=true
+ProtectSystem=full
+ProtectHome=true
+NoNewPrivileges=true
+CapabilityBoundingSet=
+
+[Install]
+WantedBy=multi-user.target

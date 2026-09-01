@@ -1,0 +1,7 @@
+[Unit]
+Description=Aggregate resource guard for Beta Center staging
+
+[Slice]
+# Keep headroom for the pre-existing sing-box service and the operating system.
+CPUQuota=75%
+MemoryLimit=700M

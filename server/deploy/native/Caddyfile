@@ -1,0 +1,219 @@
+{
+	admin unix//run/caddy/admin.sock
+	persist_config off
+	storage file_system {
+		root /var/lib/beta-center-native/caddy-data
+	}
+	servers :18443 {
+		protocols h1 h2
+	}
+}
+
+(security_headers) {
+	header {
+		-Server
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "same-origin"
+	}
+}
+
+(proxy_headers) {
+	header_up X-Forwarded-For {remote_host}
+	header_up X-Forwarded-Proto https
+	header_up X-Forwarded-Host {host}
+	header_up -X-Real-IP
+}
+
+(admin_upload_auth) {
+	forward_auth 127.0.0.1:18089 {
+		uri /api/v1/auth/upload-permission/admin
+		# GHSA-6365 is a v2.11.4 dial/idle-connection race. Keep the
+		# bodyless auth subrequest single-use until an official fixed
+		# Caddy release exists; application proxy keepalives stay enabled.
+		transport http {
+			dial_timeout 3s
+			response_header_timeout 5s
+			keepalive off
+		}
+		header_up X-Forwarded-For {remote_host}
+		header_up X-Forwarded-Proto https
+		header_up X-Forwarded-Host {host}
+		header_up -X-Real-IP
+		header_up -Expect
+		header_up -Content-Length
+		header_up -Content-Type
+	}
+}
+
+(user_upload_auth) {
+	forward_auth 127.0.0.1:18089 {
+		uri /api/v1/auth/upload-permission/user
+		# See admin_upload_auth. Both auth transports deliberately avoid
+		# reusing an upstream connection, while business traffic does not.
+		transport http {
+			dial_timeout 3s
+			response_header_timeout 5s
+			keepalive off
+		}
+		header_up X-Forwarded-For {remote_host}
+		header_up X-Forwarded-Proto https
+		header_up X-Forwarded-Host {host}
+		header_up -X-Real-IP
+		header_up -Expect
+		header_up -Content-Length
+		header_up -Content-Type
+	}
+}
+
+https://{$BETA_PUBLIC_IP}:18443 {
+	import security_headers
+	@missing_upload_auth {
+		header !Authorization
+		not header_regexp beta_access Cookie (?i)(^|;[[:space:]]*)beta_access=
+	}
+
+	tls {
+		issuer acme https://acme-v02.api.letsencrypt.org/directory {
+			profile shortlived
+			disable_tlsalpn_challenge
+		}
+	}
+
+	# Never expose the storage namespace as a public route. The same path is
+	# only used after an authenticated upstream response is intercepted below.
+	@direct_protected path /_protected-files/*
+	@admin_image_upload {
+		method POST
+		path_regexp admin_image ^/api/v1/admin/apps/[^/]+/(icon|screenshots)$
+	}
+	@admin_apk_upload {
+		method POST
+		path_regexp admin_apk ^/api/v1/admin/apps/[^/]+/versions$
+	}
+	@bug_upload {
+		method POST
+		path /api/v1/bugs
+	}
+
+	# One literal route contains every mutually exclusive branch. Without this
+	# wrapper, Caddy's normal directive sorting can place the matcherless fallback
+	# handle ahead of the upload routes in adapted JSON.
+	route {
+		# Public Android client releases live in one dedicated read-only directory.
+		# The update client reads index.json and derives download URLs only from
+		# strictly validated versioned APK filenames.
+		handle_path /downloads/android/* {
+			root * /var/lib/beta-center-native/client-downloads
+			header Cache-Control "public, max-age=300"
+			file_server
+		}
+
+		handle @direct_protected {
+			respond 404
+		}
+
+		handle @admin_image_upload {
+			route {
+				# Reject requests with neither bearer nor cookie credentials before any
+				# reverse proxy touches the upload body. Closing also prevents body drain.
+				respond @missing_upload_auth `{"error":{"code":"not_authenticated","message":"authentication required"}}` 401 {
+					close
+				}
+				# forward_auth performs a bodyless GET. Literal route order guarantees
+				# authentication completes before request_body permits multipart reads.
+				import admin_upload_auth
+				request_body {
+					max_size 13MB
+				}
+				reverse_proxy 127.0.0.1:18089 {
+					import proxy_headers
+					flush_interval -1
+					transport http {
+						dial_timeout 3s
+						response_header_timeout 5m
+						keepalive 4s
+					}
+				}
+			}
+		}
+
+		handle @admin_apk_upload {
+			route {
+				respond @missing_upload_auth `{"error":{"code":"not_authenticated","message":"authentication required"}}` 401 {
+					close
+				}
+				import admin_upload_auth
+				request_body {
+					# 512 MiB application limit plus multipart framing headroom.
+					max_size 545MB
+				}
+				reverse_proxy 127.0.0.1:18089 {
+					import proxy_headers
+					flush_interval -1
+					transport http {
+						dial_timeout 3s
+						response_header_timeout 10m
+						keepalive 4s
+					}
+				}
+			}
+		}
+
+		handle @bug_upload {
+			route {
+				respond @missing_upload_auth `{"error":{"code":"not_authenticated","message":"authentication required"}}` 401 {
+					close
+				}
+				import user_upload_auth
+				request_body {
+					# Five 10 MiB screenshots plus multipart framing headroom.
+					max_size 64MB
+				}
+				reverse_proxy 127.0.0.1:18089 {
+					import proxy_headers
+					flush_interval -1
+					transport http {
+						dial_timeout 3s
+						response_header_timeout 5m
+						keepalive 4s
+					}
+				}
+			}
+		}
+
+		handle {
+			request_body {
+				max_size 2MB
+			}
+			reverse_proxy 127.0.0.1:18089 {
+				import proxy_headers
+				transport http {
+					dial_timeout 3s
+					response_header_timeout 90s
+					keepalive 4s
+				}
+
+				@accel header X-Accel-Redirect /_protected-files/*
+				handle_response @accel {
+					copy_response_headers {
+						include Content-Type Content-Disposition Cache-Control X-Content-Type-Options
+					}
+					rewrite {rp.header.X-Accel-Redirect}
+					uri strip_prefix /_protected-files
+					method GET
+					root * /var/lib/beta-center-native/storage
+					file_server
+				}
+			}
+		}
+	}
+}
+
+# HTTP is required for Let's Encrypt's HTTP-01 IP-address validation. Caddy
+# inserts its ACME challenge handler ahead of this catch-all redirect. Port 443
+# is deliberately absent because sing-box owns it and TLS-ALPN is disabled.
+http://{$BETA_PUBLIC_IP}:80 {
+	redir https://{$BETA_PUBLIC_IP}:18443{uri} permanent
+}

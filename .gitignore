@@ -1,0 +1,51 @@
+.DS_Store
+.idea/
+.vscode/
+*.iml
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.jks
+*.keystore
+.secrets/
+
+# Python
+__pycache__/
+*.py[cod]
+.python-version
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Runtime data
+server/data/
+server/output/
+*.db
+*.sqlite*
+*.log
+data/backups/
+
+# Android and Gradle
+.gradle/
+.kotlin/
+local.properties
+**/build/
+captures/
+*.apk
+*.aab
+
+# Generated test and documentation artifacts
+test-results/
+artifacts/
+*.pdf
+*.docx
+*.ttf
+*.otf

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">QA 试验场</string>
+    <string name="qa_badge">QA</string>
+    <string name="count_value">%1$d</string>
+    <string name="result_meta">%1$s  ·  %2$d 次通过记录</string>
+</resources>

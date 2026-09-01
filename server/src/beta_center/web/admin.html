@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#00554c" />
+    <title>NEXT Beta · 管理后台</title>
+    <link rel="icon" type="image/png" sizes="48x48" href="/admin/assets/assets/next-icon-48.png?v=20260831-1140" />
+    <link rel="stylesheet" href="/admin/assets/admin.css?v=20260831-2118" />
+    <script type="module" src="/admin/assets/admin.js?v=20260831-1105"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#view-root">跳到主要内容</a>
+
+    <main id="login-view" class="login-stage" aria-labelledby="login-title">
+      <section class="login-copy">
+        <div class="brand-lockup brand-lockup--dark">
+          <img class="brand-logo" src="/admin/assets/assets/next-icon-128.png?v=20260831-1140" alt="" aria-hidden="true" />
+          <span><strong>NEXT Beta</strong><small>内测管理平台</small></span>
+        </div>
+        <div class="login-message">
+          <h1 id="login-title">让每个内测版本<br />都清楚可控</h1>
+          <p>管理 APK、测试范围、下载证据与 Bug 处理状态。所有文件保持私有访问，测试用户只看到所属组的应用。</p>
+        </div>
+        <div class="release-orbit" aria-hidden="true">
+          <span class="orbit-card orbit-card--one"><b>APK</b><small>签名校验</small></span>
+          <span class="orbit-card orbit-card--two"><b>测试组</b><small>定向可见</small></span>
+          <span class="orbit-card orbit-card--three"><b>Bug</b><small>反馈闭环</small></span>
+          <i></i>
+        </div>
+      </section>
+
+      <section class="login-panel" aria-label="管理员登录">
+        <form id="login-form" class="auth-card">
+          <header>
+            <img class="auth-seal" src="/admin/assets/assets/next-icon-128.png?v=20260831-1140" alt="" aria-hidden="true" />
+            <div><h2>管理员登录</h2><p>使用后台已创建并绑定手机号的账户</p></div>
+          </header>
+          <label class="field">
+            <span>手机号</span>
+            <input name="phone" type="tel" inputmode="tel" autocomplete="username" maxlength="20" required placeholder="请输入手机号" />
+          </label>
+          <label class="field">
+            <span>密码</span>
+            <input name="password" type="password" autocomplete="current-password" maxlength="128" required placeholder="请输入密码" />
+          </label>
+          <p id="login-error" class="form-error" role="alert" hidden></p>
+          <button class="button button--primary button--wide" type="submit">
+            <span>进入管理后台</span><i data-icon="arrow-right" aria-hidden="true"></i>
+          </button>
+          <p class="auth-footnote"><span aria-hidden="true">●</span> 登录与管理操作均记录安全审计</p>
+        </form>
+      </section>
+    </main>
+
+    <div id="console-view" class="console-stage" hidden>
+      <aside class="sidebar">
+        <div class="brand-lockup">
+          <img class="brand-logo" src="/admin/assets/assets/next-icon-128.png?v=20260831-1140" alt="" aria-hidden="true" />
+          <span><strong>NEXT Beta</strong><small>内测管理平台</small></span>
+        </div>
+        <button id="sidebar-new-app" class="sidebar-primary-action" type="button"><i data-icon="plus" aria-hidden="true"></i><span>新建内测应用</span></button>
+        <nav id="primary-nav" class="primary-nav" aria-label="管理后台导航">
+          <button type="button" data-route="dashboard"><i data-icon="dashboard" aria-hidden="true"></i><span>发布概览</span></button>
+          <button type="button" data-route="apps"><i data-icon="apps" aria-hidden="true"></i><span>应用与版本</span></button>
+          <button type="button" data-route="groups"><i data-icon="groups" aria-hidden="true"></i><span>测试组</span></button>
+          <button type="button" data-route="bugs"><i data-icon="bugs" aria-hidden="true"></i><span>Bug 反馈</span><b id="bug-nav-count" hidden></b></button>
+          <button type="button" data-route="users"><i data-icon="users" aria-hidden="true"></i><span>用户管理</span></button>
+          <button type="button" data-route="downloads"><i data-icon="downloads" aria-hidden="true"></i><span>下载记录</span></button>
+          <button type="button" data-route="audit"><i data-icon="audit" aria-hidden="true"></i><span>审计日志</span></button>
+        </nav>
+        <footer class="sidebar-user">
+          <span id="account-avatar" class="avatar">管</span>
+          <span><strong id="account-name">管理员</strong><small id="account-phone">—</small></span>
+          <button id="logout-button" class="icon-button" type="button" title="退出登录" aria-label="退出登录"><i data-icon="logout" aria-hidden="true"></i></button>
+        </footer>
+      </aside>
+
+      <section class="workspace">
+        <header class="workspace-header">
+          <div>
+            <h1 id="page-title">发布概览</h1>
+            <p id="page-description">查看内测参与、版本发布与反馈处理状态</p>
+          </div>
+          <div id="page-actions" class="page-actions"></div>
+        </header>
+        <main id="view-root" class="view-root" tabindex="-1" aria-live="polite"></main>
+      </section>
+    </div>
+
+    <div id="loading-bar" class="loading-bar" aria-label="正在加载" hidden></div>
+    <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+    <dialog id="entity-dialog" class="dialog dialog--wide" aria-labelledby="dialog-title">
+      <form id="entity-form" method="dialog">
+        <header class="dialog-header">
+          <div><h2 id="dialog-title">编辑项目</h2></div>
+          <button class="icon-button" type="button" data-close-dialog aria-label="关闭"><i data-icon="close" aria-hidden="true"></i></button>
+        </header>
+        <div id="dialog-body" class="dialog-body"></div>
+        <p id="dialog-error" class="form-error" role="alert" hidden></p>
+        <footer class="dialog-footer">
+          <button class="button button--quiet" type="button" data-close-dialog>取消</button>
+          <button id="dialog-submit" class="button button--primary" type="submit">保存</button>
+        </footer>
+      </form>
+    </dialog>
+
+    <dialog id="detail-dialog" class="dialog dialog--detail" aria-labelledby="detail-title">
+      <article>
+        <header class="dialog-header dialog-header--sticky">
+          <div><h2 id="detail-title">项目详情</h2></div>
+          <button class="icon-button" type="button" data-close-detail aria-label="关闭"><i data-icon="close" aria-hidden="true"></i></button>
+        </header>
+        <div id="detail-body" class="dialog-body"></div>
+      </article>
+    </dialog>
+
+    <dialog id="password-dialog" class="dialog dialog--compact" data-static aria-labelledby="password-dialog-title">
+      <form id="password-form" method="dialog">
+        <header class="dialog-header">
+          <div><h2 id="password-dialog-title">设置你的新密码</h2></div>
+        </header>
+        <div class="dialog-body form-stack">
+          <p class="dialog-note">初始密码仅用于首次登录。修改后当前会话将退出，请用新密码重新登录。</p>
+          <label class="field"><span>当前密码</span><input name="current_password" type="password" autocomplete="current-password" required maxlength="128" /></label>
+          <label class="field"><span>新密码</span><input name="new_password" type="password" autocomplete="new-password" required minlength="10" maxlength="128" /></label>
+          <label class="field"><span>确认新密码</span><input name="confirm_password" type="password" autocomplete="new-password" required minlength="10" maxlength="128" /></label>
+          <p class="field-hint">至少 10 位，并同时包含大小写字母、数字和符号。</p>
+          <p id="password-error" class="form-error" role="alert" hidden></p>
+        </div>
+        <footer class="dialog-footer"><button class="button button--primary button--wide" type="submit">保存并重新登录</button></footer>
+      </form>
+    </dialog>
+
+    <dialog id="reauth-dialog" class="dialog dialog--compact" data-static aria-labelledby="reauth-dialog-title">
+      <form id="reauth-form" method="dialog">
+        <header class="dialog-header">
+          <div><h2 id="reauth-dialog-title">确认当前管理员身份</h2></div>
+          <button class="icon-button" type="button" data-cancel-reauth aria-label="取消"><i data-icon="close" aria-hidden="true"></i></button>
+        </header>
+        <div class="dialog-body form-stack">
+          <p class="dialog-note">这项操作会影响账户、发布或访问范围，请输入当前登录密码后继续。</p>
+          <label class="field"><span>当前密码</span><input name="password" type="password" autocomplete="current-password" required maxlength="128" /></label>
+          <p id="reauth-error" class="form-error" role="alert" hidden></p>
+        </div>
+        <footer class="dialog-footer">
+          <button class="button button--quiet" type="button" data-cancel-reauth>取消</button>
+          <button class="button button--primary" type="submit">验证并继续</button>
+        </footer>
+      </form>
+    </dialog>
+
+    <noscript><p class="noscript">管理后台需要启用 JavaScript。</p></noscript>
+  </body>
+</html>

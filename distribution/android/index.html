@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#063b34">
+  <meta name="color-scheme" content="light">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'self'; base-uri 'none'; form-action 'none'">
+  <title>NEXT 系统内测平台</title>
+  <style>
+    :root{--ink:#0b201c;--muted:#5c716c;--green:#075e52;--mint:#63f2da;--blue:#2357ff;--paper:#f4f8f6;--line:#dbe6e2}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans SC","Microsoft YaHei",sans-serif;color:var(--ink);background:var(--paper)}
+    body{min-height:100vh;min-height:100svh;background:radial-gradient(circle at 88% 5%,rgba(99,242,218,.22),transparent 31%),linear-gradient(180deg,#eaf4f0 0,#f7f9f8 48%,#edf4f1 100%)}
+    .shell{width:min(100%,680px);margin:0 auto;padding:32px 20px calc(38px + env(safe-area-inset-bottom))}
+    .wechat-tip{display:none;position:relative;margin:0 0 18px;padding:18px 48px 18px 20px;border-radius:20px;background:#072f2a;color:#eafffa;box-shadow:0 18px 45px rgba(4,43,37,.18)}
+    .wechat .wechat-tip{display:block}.wechat-tip strong{display:block;font-size:18px;margin-bottom:5px}.wechat-tip p{margin:0;color:#bce6de;font-size:14px;line-height:1.6}.arrow{position:absolute;right:20px;top:14px;font-size:28px;color:var(--mint)}
+    .card{overflow:hidden;border:1px solid rgba(8,67,58,.08);border-radius:32px;background:rgba(255,255,255,.91);box-shadow:0 26px 80px rgba(7,63,55,.12)}
+    .hero{position:relative;padding:30px 28px 34px;color:white;background:linear-gradient(145deg,#063e36,#075f52 63%,#087566)}
+    .hero:after{content:"";position:absolute;width:230px;height:230px;border:1px solid rgba(118,255,232,.2);border-radius:50%;right:-92px;top:-85px;box-shadow:0 0 0 42px rgba(103,242,218,.05),0 0 0 88px rgba(103,242,218,.035)}
+    .brand{position:relative;z-index:1;display:flex;align-items:center;gap:16px}.brand img{width:64px;height:64px;filter:drop-shadow(0 10px 24px rgba(0,0,0,.18))}.brand-kicker{font-size:12px;letter-spacing:2.3px;color:#9ff3e4}.brand h1{margin:3px 0 0;font-size:27px;line-height:1.25}
+    .hero-copy{position:relative;z-index:1;margin:27px 0 0;font-size:16px;line-height:1.75;color:#d9f5ef;max-width:480px}
+    .content{padding:28px}.version-row{display:flex;gap:16px;align-items:flex-start;margin-bottom:24px}.app-icon{display:grid;place-items:center;flex:none;width:68px;height:68px;border-radius:20px;background:#e4f4ef}.app-icon img{width:54px;height:54px}.version-copy{min-width:0;flex:1}.version-copy h2{margin:3px 0 5px;font-size:21px}.meta{font-size:14px;color:var(--muted);line-height:1.6}.notes{margin:0 0 24px;padding:17px 18px;border-radius:18px;background:#eff6f3;color:#405d57;font-size:14px;line-height:1.7}
+    .download{display:flex;align-items:center;justify-content:center;width:100%;min-height:56px;border:0;border-radius:18px;background:linear-gradient(135deg,var(--blue),#1644d9);color:#fff;text-decoration:none;font-size:17px;font-weight:700;box-shadow:0 15px 32px rgba(35,87,255,.22);cursor:pointer;-webkit-tap-highlight-color:transparent}.download:active{transform:translateY(1px)}
+    .wechat .download{background:linear-gradient(135deg,#0b6b5e,#075247);box-shadow:0 15px 32px rgba(7,83,72,.19)}
+    .help{margin:18px 4px 0;text-align:center;color:#687d78;font-size:13px;line-height:1.65}.browser-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:25px}.step{padding:14px 10px;border:1px solid var(--line);border-radius:16px;text-align:center;background:#fbfdfc}.step b{display:grid;place-items:center;width:25px;height:25px;margin:0 auto 8px;border-radius:50%;background:#daf5ed;color:#075e52;font-size:13px}.step span{font-size:12px;color:#58706a;line-height:1.45}
+    .foot{margin-top:21px;text-align:center;color:#78908a;font-size:12px}.toast{visibility:hidden;position:fixed;left:50%;bottom:34px;transform:translateX(-50%);padding:12px 18px;border-radius:999px;background:#092f2a;color:white;font-size:14px;box-shadow:0 12px 36px rgba(0,0,0,.25)}.toast.show{visibility:visible}
+    @media(max-width:390px){.shell{padding-left:14px;padding-right:14px}.hero,.content{padding-left:22px;padding-right:22px}.brand h1{font-size:24px}.browser-steps{gap:6px}.step{padding-left:5px;padding-right:5px}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="wechat-tip" aria-live="polite">
+      <span class="arrow">↗</span>
+      <strong>请在浏览器中下载</strong>
+      <p>点击微信右上角“···”，选择“在浏览器打开”，再点击页面中的下载按钮。</p>
+    </section>
+    <article class="card">
+      <header class="hero">
+        <div class="brand">
+          <img src="next-logo.png" alt="NEXT Logo">
+          <div><div class="brand-kicker">INTERNAL BETA PLATFORM</div><h1>NEXT 系统内测平台</h1></div>
+        </div>
+        <p class="hero-copy">面向公司内部测试用户的 Android 应用分发平台，集中完成版本下载、安装更新与 Bug 反馈。</p>
+      </header>
+      <div class="content">
+        <div class="version-row">
+          <div class="app-icon"><img src="next-logo.png" alt=""></div>
+          <div class="version-copy">
+            <h2>Android 内测客户端</h2>
+            <div class="meta"><span id="version">最新版</span> · <span id="size">约 13 MB</span><br>支持 Android 8.0 及以上</div>
+          </div>
+        </div>
+        <p class="notes" id="notes">使用固定下载地址获取最新版本。安装时请按 Android 系统提示允许安装。</p>
+        <a class="download" id="download" href="NEXT-Beta-android-latest.apk" rel="nofollow">下载 Android 客户端</a>
+        <p class="help" id="help">如果下载没有自动开始，请确认已使用手机浏览器打开本页面。</p>
+        <div class="browser-steps" aria-label="微信打开步骤">
+          <div class="step"><b>1</b><span>点击右上角<br>“···”</span></div>
+          <div class="step"><b>2</b><span>选择<br>“在浏览器打开”</span></div>
+          <div class="step"><b>3</b><span>点击按钮<br>下载安装</span></div>
+        </div>
+      </div>
+    </article>
+    <footer class="foot">仅限公司内部测试使用 · NEXT SYSTEM</footer>
+  </main>
+  <div class="toast" id="toast" role="status">请先在浏览器中打开本页面</div>
+  <script>
+    (() => {
+      const wechat = /MicroMessenger/i.test(navigator.userAgent);
+      if (wechat) document.documentElement.classList.add('wechat');
+      const button = document.getElementById('download');
+      const toast = document.getElementById('toast');
+      if (wechat) {
+        button.textContent = '请先在浏览器中打开';
+        button.addEventListener('click', event => {
+          event.preventDefault();
+          toast.classList.add('show');
+          setTimeout(() => toast.classList.remove('show'), 2200);
+          window.scrollTo({top: 0, behavior: 'smooth'});
+        });
+      }
+      fetch('index.json', {cache: 'no-store'}).then(response => response.ok ? response.json() : null).then(data => {
+        const file = data && Array.isArray(data.files) ? data.files.slice().sort((a,b) => (b.versionCode||0)-(a.versionCode||0))[0] : null;
+        if (!file) return;
+        const version = /^NEXT-Beta-android-(\d+\.\d+\.\d+)\.apk$/.exec(file.name || '');
+        if (version) document.getElementById('version').textContent = `版本 ${version[1]}`;
+        if (file.size > 0) document.getElementById('size').textContent = `${(file.size / 1048576).toFixed(1)} MB`;
+        if (file.releaseNotes) document.getElementById('notes').textContent = file.releaseNotes;
+      }).catch(() => {});
+    })();
+  </script>
+</body>
+</html>

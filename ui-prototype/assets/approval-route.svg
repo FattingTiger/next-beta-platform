@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="600" viewBox="0 0 300 600" role="img" aria-labelledby="title">
+  <title id="title">审批进度详情</title>
+  <defs>
+    <linearGradient id="header" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4165e0"/>
+      <stop offset="1" stop-color="#21377f"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#17372d" flood-opacity=".1"/>
+    </filter>
+  </defs>
+  <rect width="300" height="600" rx="28" fill="#eff3f2"/>
+  <rect width="300" height="230" rx="28" fill="url(#header)"/>
+  <circle cx="260" cy="50" r="80" fill="#7c96ff" opacity=".28"/>
+  <circle cx="32" cy="214" r="70" fill="#55d3aa" opacity=".18"/>
+  <text x="22" y="28" fill="#f0f3ff" font-size="10" font-family="Arial, sans-serif" font-weight="700">10:30</text>
+  <text x="251" y="28" fill="#f0f3ff" font-size="9" font-family="Arial, sans-serif">5G 84%</text>
+  <path d="M29 61l-7 7 7 7" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="54" y="73" fill="#ffffff" font-size="15" font-family="Arial, sans-serif" font-weight="700">审批详情</text>
+  <rect x="20" y="100" width="260" height="104" rx="20" fill="#ffffff" opacity=".12" stroke="#ffffff" stroke-opacity=".14"/>
+  <text x="36" y="125" fill="#cdd7ff" font-size="9" font-family="Arial, sans-serif">差旅报销申请</text>
+  <text x="36" y="157" fill="#ffffff" font-size="20" font-family="Arial, sans-serif" font-weight="700">¥ 3,860.00</text>
+  <text x="36" y="183" fill="#cbd4f4" font-size="9" font-family="Arial, sans-serif">申请人 周敏 · 2026-08-27</text>
+  <rect x="214" y="132" width="48" height="24" rx="12" fill="#ffdba8"/>
+  <text x="238" y="148" text-anchor="middle" fill="#7c4900" font-size="8" font-family="Arial, sans-serif" font-weight="700">处理中</text>
+  <g filter="url(#shadow)">
+    <rect x="18" y="246" width="264" height="242" rx="22" fill="#fbfdfc"/>
+    <text x="34" y="277" fill="#1a2621" font-size="13" font-family="Arial, sans-serif" font-weight="700">审批进度</text>
+    <line x1="53" y1="313" x2="53" y2="444" stroke="#d4ddda" stroke-width="3"/>
+    <line x1="53" y1="313" x2="53" y2="369" stroke="#00795a" stroke-width="3"/>
+    <circle cx="53" cy="313" r="10" fill="#00795a"/>
+    <path d="M48 313l3 3 6-7" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="53" cy="378" r="10" fill="#4165e0"/>
+    <circle cx="53" cy="378" r="4" fill="#ffffff"/>
+    <circle cx="53" cy="443" r="9" fill="#e2e7e5" stroke="#a8b5af"/>
+    <text x="77" y="309" fill="#1b2823" font-size="10" font-family="Arial, sans-serif" font-weight="700">部门负责人</text>
+    <text x="77" y="328" fill="#69766f" font-size="8" font-family="Arial, sans-serif">林然 · 已同意 09:42</text>
+    <text x="77" y="374" fill="#1b2823" font-size="10" font-family="Arial, sans-serif" font-weight="700">财务复核</text>
+    <text x="77" y="393" fill="#3357d5" font-size="8" font-family="Arial, sans-serif">王乔 · 正在处理</text>
+    <text x="77" y="439" fill="#1b2823" font-size="10" font-family="Arial, sans-serif" font-weight="700">财务负责人</text>
+    <text x="77" y="458" fill="#87938e" font-size="8" font-family="Arial, sans-serif">等待上一节点完成</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="18" y="506" width="126" height="62" rx="17" fill="#fbfdfc"/>
+    <rect x="156" y="506" width="126" height="62" rx="17" fill="#fbfdfc"/>
+    <text x="81" y="532" text-anchor="middle" fill="#64716b" font-size="8" font-family="Arial, sans-serif">审批耗时</text>
+    <text x="81" y="551" text-anchor="middle" fill="#1a2621" font-size="13" font-family="Arial, sans-serif" font-weight="700">2 小时 18 分</text>
+    <text x="219" y="532" text-anchor="middle" fill="#64716b" font-size="8" font-family="Arial, sans-serif">当前节点</text>
+    <text x="219" y="551" text-anchor="middle" fill="#3357d5" font-size="13" font-family="Arial, sans-serif" font-weight="700">财务复核</text>
+  </g>
+</svg>

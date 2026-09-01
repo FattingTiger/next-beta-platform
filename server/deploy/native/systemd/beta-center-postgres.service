@@ -1,0 +1,33 @@
+[Unit]
+Description=Beta Center native staging PostgreSQL 17
+After=local-fs.target
+Before=beta-center-app.service
+
+[Service]
+Type=simple
+Slice=beta-center.slice
+User=beta-pg
+Group=beta-pg
+PermissionsStartOnly=true
+ExecStartPre=/usr/bin/systemd-tmpfiles --create /etc/tmpfiles.d/beta-center-native.conf
+ExecStart=/opt/beta-center-native/postgresql-17/bin/postgres -D /var/lib/beta-center-native/postgres -c config_file=/etc/beta-center-native/postgresql.conf -c hba_file=/etc/beta-center-native/pg_hba.conf
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGINT
+TimeoutStartSec=120
+TimeoutStopSec=120
+Restart=on-failure
+RestartSec=3
+MemoryLimit=192M
+CPUQuota=90%
+OOMScoreAdjust=300
+LimitNOFILE=8192
+LimitNPROC=128
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=full
+ProtectHome=true
+NoNewPrivileges=true
+CapabilityBoundingSet=
+
+[Install]
+WantedBy=multi-user.target

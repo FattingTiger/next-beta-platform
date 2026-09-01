@@ -1,0 +1,11 @@
+{
+  "files": [
+    {
+      "name": "NEXT-Beta-android-1.0.2.apk",
+      "versionCode": 3,
+      "size": 12345678,
+      "sha256": "replace-with-lowercase-sha256",
+      "releaseNotes": "填写本版本更新内容"
+    }
+  ]
+}

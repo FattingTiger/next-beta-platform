@@ -1,0 +1,44 @@
+[Unit]
+Description=Beta Center native staging Caddy 2.11.4 gateway
+Wants=network-online.target
+Requires=beta-center-app.service
+After=network-online.target beta-center-app.service
+
+[Service]
+Type=notify
+Slice=beta-center.slice
+User=beta-caddy
+Group=beta-caddy
+SupplementaryGroups=beta-files
+EnvironmentFile=/etc/beta-center-native/runtime.env
+Environment=GOMAXPROCS=1
+Environment=GOMEMLIMIT=96MiB
+Environment=XDG_DATA_HOME=/var/lib/beta-center-native/caddy-data
+Environment=XDG_CONFIG_HOME=/var/lib/beta-center-native/caddy-config
+WorkingDirectory=/var/lib/beta-center-native/caddy-data
+PermissionsStartOnly=true
+ExecStartPre=/usr/bin/systemd-tmpfiles --create /etc/tmpfiles.d/beta-center-native.conf
+ExecStart=/opt/beta-center-native/caddy-2.11.4/bin/caddy run --config /etc/beta-center-native/Caddyfile --adapter caddyfile
+ExecReload=/opt/beta-center-native/caddy-2.11.4/bin/caddy reload --address unix//run/caddy/admin.sock --config /etc/beta-center-native/Caddyfile --adapter caddyfile --force
+TimeoutStartSec=180
+TimeoutStopSec=30
+Restart=on-failure
+RestartSec=3
+MemoryLimit=160M
+CPUQuota=75%
+OOMScoreAdjust=300
+LimitNOFILE=16384
+LimitNPROC=128
+UMask=0077
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=full
+ProtectHome=true
+# Caddy has only CAP_NET_BIND_SERVICE. Private files are read through the
+# beta-files supplementary group (0750 directories and 0640 files).
+# no_new_privs would suppress the binary file capability.
+NoNewPrivileges=false
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+
+[Install]
+WantedBy=multi-user.target

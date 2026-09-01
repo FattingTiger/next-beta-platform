@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="600" viewBox="0 0 300 600" role="img" aria-labelledby="title">
+  <title id="title">审批记录导出失败</title>
+  <defs>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="180%">
+      <feDropShadow dx="0" dy="12" stdDeviation="15" flood-color="#070d0b" flood-opacity=".28"/>
+    </filter>
+  </defs>
+  <rect width="300" height="600" rx="28" fill="#eef3f1"/>
+  <text x="22" y="28" fill="#26342f" font-size="10" font-family="Arial, sans-serif" font-weight="700">10:30</text>
+  <text x="250" y="28" fill="#26342f" font-size="9" font-family="Arial, sans-serif">5G 84%</text>
+  <path d="M28 61l-7 7 7 7" fill="none" stroke="#1e2a25" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="52" y="73" fill="#111a17" font-size="18" font-family="Arial, sans-serif" font-weight="700">审批记录</text>
+  <rect x="210" y="49" width="72" height="36" rx="13" fill="#e4e9ff"/>
+  <text x="246" y="72" text-anchor="middle" fill="#3357d5" font-size="10" font-family="Arial, sans-serif" font-weight="700">导出记录</text>
+  <g opacity=".5" font-family="Arial, sans-serif">
+    <rect x="18" y="110" width="264" height="84" rx="18" fill="#ffffff"/>
+    <rect x="18" y="208" width="264" height="84" rx="18" fill="#ffffff"/>
+    <rect x="18" y="306" width="264" height="84" rx="18" fill="#ffffff"/>
+    <rect x="32" y="126" width="44" height="44" rx="14" fill="#dfe5ff"/>
+    <rect x="32" y="224" width="44" height="44" rx="14" fill="#dff2eb"/>
+    <rect x="32" y="322" width="44" height="44" rx="14" fill="#fff0db"/>
+    <text x="90" y="138" fill="#1b2823" font-size="10" font-weight="700">差旅报销申请</text>
+    <text x="90" y="236" fill="#1b2823" font-size="10" font-weight="700">采购合同审批</text>
+    <text x="90" y="334" fill="#1b2823" font-size="10" font-weight="700">年假申请</text>
+    <rect x="90" y="151" width="110" height="8" rx="4" fill="#d7dfdc"/>
+    <rect x="90" y="249" width="95" height="8" rx="4" fill="#d7dfdc"/>
+    <rect x="90" y="347" width="120" height="8" rx="4" fill="#d7dfdc"/>
+  </g>
+  <rect width="300" height="600" rx="28" fill="#0c1512" opacity=".46"/>
+  <g filter="url(#shadow)" font-family="Arial, sans-serif">
+    <rect x="30" y="190" width="240" height="220" rx="26" fill="#fbfdfc"/>
+    <circle cx="150" cy="248" r="28" fill="#ffe3e0"/>
+    <path d="M141 239l18 18M159 239l-18 18" stroke="#b3261e" stroke-width="3" stroke-linecap="round"/>
+    <text x="150" y="304" text-anchor="middle" fill="#1a2621" font-size="16" font-weight="700">导出失败</text>
+    <text x="150" y="330" text-anchor="middle" fill="#64716b" font-size="9">暂时无法生成审批记录文件</text>
+    <text x="150" y="346" text-anchor="middle" fill="#64716b" font-size="9">请稍后重试</text>
+    <rect x="52" y="367" width="196" height="38" rx="13" fill="#3357d5"/>
+    <text x="150" y="391" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="700">我知道了</text>
+  </g>
+</svg>

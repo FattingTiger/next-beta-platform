@@ -1,0 +1,210 @@
+name: beta-center
+
+services:
+  db:
+    image: postgres:17.11-bookworm@sha256:051f7b7b3abdd564d5d1bd1e8c4b9c1b6e77087d1dd22020ede611c096a272e0
+    user: postgres
+    environment:
+      POSTGRES_DB: ${BETA_DB_NAME:-beta_center}
+      POSTGRES_USER: ${BETA_DB_USER:-beta_center}
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    secrets:
+      - db_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - database
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready --username="$$POSTGRES_USER" --dbname="$$POSTGRES_DB"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=64m
+      - /var/run/postgresql:rw,noexec,nosuid,nodev,size=16m,uid=999,gid=999,mode=0770
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 256
+    mem_limit: ${BETA_DB_MEM_LIMIT:-1g}
+    cpus: ${BETA_DB_CPUS:-1.0}
+    stop_grace_period: 60s
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "5"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: beta-center-server:${BETA_IMAGE_TAG:-local}
+    user: "10001:10001"
+    command:
+      - uvicorn
+      - beta_center.main:app
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+      - --workers
+      - "1"
+      - --no-proxy-headers
+      - --no-access-log
+    environment:
+      BETA_ENVIRONMENT: production
+      BETA_DB_HOST: db
+      BETA_DB_PORT: "5432"
+      BETA_DB_NAME: ${BETA_DB_NAME:-beta_center}
+      BETA_DB_USER: ${BETA_DB_USER:-beta_center}
+      BETA_DB_PASSWORD_FILE: /run/secrets/db_password
+      BETA_SECRET_KEY_FILE: /run/secrets/app_secret
+      BETA_PUBLIC_BASE_URL: ${BETA_PUBLIC_BASE_URL:?set BETA_PUBLIC_BASE_URL}
+      BETA_ALLOWED_HOSTS: '${BETA_ALLOWED_HOSTS:-["localhost","127.0.0.1"]}'
+      BETA_TRUSTED_PROXY_NETWORKS: '["${BETA_GATEWAY_EDGE_IP:-172.31.255.243}/32"]'
+      BETA_COOKIE_SECURE: "true"
+      BETA_AUTO_CREATE_SCHEMA: "false"
+      BETA_REQUIRE_APK_TOOLS: "true"
+      BETA_USE_X_ACCEL_REDIRECT: "true"
+      BETA_RUN_MIGRATIONS: "true"
+    secrets:
+      - db_password
+      - app_secret
+    volumes:
+      - storage_data:/var/lib/beta-center/storage
+      - upload_tmp:/var/tmp/beta-center
+    networks:
+      database: {}
+      edge:
+        ipv4_address: ${BETA_APP_EDGE_IP:-172.31.255.242}
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - >-
+          import urllib.request;
+          urllib.request.urlopen('http://127.0.0.1:8000/health/ready', timeout=3).read()
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=256m,uid=10001,gid=10001,mode=0700
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 256
+    mem_limit: ${BETA_APP_MEM_LIMIT:-1536m}
+    cpus: ${BETA_APP_CPUS:-1.5}
+    stop_grace_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: 20m
+        max-file: "5"
+
+  gateway:
+    image: nginxinc/nginx-unprivileged:1.28.1-alpine-slim@sha256:ce7786ca8aeaa99d6633bc65346b2dca33b098d41a1b670dcf78bb8f1489eded
+    # The storage backend intentionally creates private 0700/0600 paths as
+    # 10001. Running Nginx under the same unprivileged identity lets it serve
+    # authorized X-Accel responses without making APKs world-readable.
+    user: "10001:10001"
+    command:
+      - nginx
+      - -c
+      - /tmp/nginx.conf
+      - -g
+      - daemon off;
+    environment:
+      # envsubst is filtered so Nginx variables such as $remote_addr remain
+      # literal. Only the exact Docker ingress bridge peer is trusted.
+      NGINX_ENVSUBST_FILTER: ^BETA_NGINX_
+      NGINX_ENVSUBST_OUTPUT_DIR: /tmp
+      BETA_NGINX_TRUSTED_PROXY: ${BETA_INGRESS_BRIDGE_GATEWAY:-172.31.255.249}
+    ports:
+      - target: 8080
+        published: ${BETA_HTTP_PORT:-18088}
+        host_ip: ${BETA_BIND_ADDRESS:-127.0.0.1}
+        protocol: tcp
+    volumes:
+      - ./deploy/nginx.conf:/etc/nginx/templates/nginx.conf.template:ro
+      - storage_data:/var/lib/beta-center/storage:ro
+    networks:
+      edge:
+        ipv4_address: ${BETA_GATEWAY_EDGE_IP:-172.31.255.243}
+      ingress:
+        ipv4_address: ${BETA_GATEWAY_INGRESS_IP:-172.31.255.250}
+    depends_on:
+      app:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/health/live"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=256m,uid=10001,gid=10001,mode=0700
+      - /var/cache/nginx:rw,noexec,nosuid,nodev,size=64m,uid=10001,gid=10001,mode=0700
+      - /var/run:rw,noexec,nosuid,nodev,size=16m,uid=10001,gid=10001,mode=0700
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 128
+    mem_limit: ${BETA_GATEWAY_MEM_LIMIT:-256m}
+    cpus: ${BETA_GATEWAY_CPUS:-0.5}
+    stop_grace_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: 20m
+        max-file: "5"
+
+networks:
+  database:
+    internal: true
+  edge:
+    internal: true
+    ipam:
+      config:
+        - subnet: ${BETA_EDGE_SUBNET:-172.31.255.240/29}
+          gateway: ${BETA_EDGE_BRIDGE_GATEWAY:-172.31.255.241}
+  # Docker cannot publish a host port from an internal-only bridge. This
+  # non-internal bridge contains only Nginx; app and db remain internal-only.
+  ingress:
+    ipam:
+      config:
+        - subnet: ${BETA_INGRESS_SUBNET:-172.31.255.248/29}
+          gateway: ${BETA_INGRESS_BRIDGE_GATEWAY:-172.31.255.249}
+
+volumes:
+  postgres_data:
+    name: ${BETA_VOLUME_PREFIX:-beta_center}_postgres
+  storage_data:
+    name: ${BETA_VOLUME_PREFIX:-beta_center}_storage
+  upload_tmp:
+    name: ${BETA_VOLUME_PREFIX:-beta_center}_upload_tmp
+
+secrets:
+  db_password:
+    file: ${BETA_DB_PASSWORD_FILE:-./.secrets/db_password}
+  app_secret:
+    file: ${BETA_APP_SECRET_FILE:-./.secrets/app_secret}
